@@ -1,0 +1,2347 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- =========================================================
+         CONFIGURAÇÃO RESPONSIVA
+         ========================================================= -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Rogério Motos - O.S</title>
+
+    <style>
+      /* =========================================================
+           1. VARIÁVEIS GERAIS
+           Para mudar as cores do sistema, altere principalmente
+           estas variáveis.
+           ========================================================= */
+
+      :root {
+        --primary: #0f172a;
+        --primary-light: #1e293b;
+
+        --accent: #e11d48;
+        --accent-hover: #be123c;
+
+        --success: #059669;
+        --success-hover: #047857;
+
+        --border: #cbd5e1;
+        --border-dark: #64748b;
+
+        --bg-body: #080c14;
+        --bg-header: #f8fafc;
+        --bg-section: #f1f5f9;
+
+        --white: #ffffff;
+        --text: #1e293b;
+        --muted: #64748b;
+
+        --shadow: 0 20px 35px rgba(0, 0, 0, 0.2);
+
+        --radius: 10px;
+      }
+
+      /* =========================================================
+           2. RESET
+           ========================================================= */
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+
+        font-family:
+          Inter,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background:
+          radial-gradient(
+            circle at top left,
+            rgba(225, 29, 72, 0.08),
+            transparent 30%
+          ),
+          var(--bg-body);
+
+        color: var(--text);
+
+        min-height: 100vh;
+
+        padding: 16px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      button,
+      input,
+      textarea {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      /* =========================================================
+           3. BARRA SUPERIOR DO SISTEMA
+           ========================================================= */
+
+      .system-toolbar {
+        width: 100%;
+        max-width: 210mm;
+
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-light)
+        );
+
+        color: white;
+
+        padding: 14px 16px;
+
+        border-radius: var(--radius);
+
+        display: flex;
+        flex-direction: column;
+
+        gap: 14px;
+
+        margin-bottom: 18px;
+
+        box-shadow: var(--shadow);
+
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .system-header-top {
+        display: flex;
+
+        justify-content: space-between;
+        align-items: center;
+
+        gap: 15px;
+      }
+
+      .system-title {
+        font-size: 1.15rem;
+
+        font-weight: 800;
+
+        display: flex;
+        align-items: center;
+
+        gap: 8px;
+      }
+
+      .system-subtitle {
+        color: #94a3b8;
+
+        font-size: 0.75rem;
+
+        margin-top: 2px;
+      }
+
+      .toolbar-actions {
+        display: grid;
+
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        gap: 8px;
+      }
+
+      .btn {
+        border: none;
+
+        color: white;
+
+        padding: 10px 14px;
+
+        border-radius: 8px;
+
+        font-size: 0.85rem;
+
+        font-weight: 700;
+
+        display: flex;
+
+        justify-content: center;
+        align-items: center;
+
+        gap: 6px;
+
+        transition:
+          transform 0.18s ease,
+          background 0.18s ease,
+          box-shadow 0.18s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .btn:active {
+        transform: translateY(0);
+      }
+
+      .btn-secondary {
+        background: #334155;
+
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .btn-secondary:hover {
+        background: #475569;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+
+        box-shadow: 0 5px 15px rgba(225, 29, 72, 0.25);
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-hover);
+      }
+
+      .btn-print {
+        background: linear-gradient(
+          135deg,
+          var(--success),
+          var(--success-hover)
+        );
+
+        box-shadow: 0 5px 15px rgba(5, 150, 105, 0.25);
+
+        grid-column: span 2;
+      }
+
+      .btn-print:hover {
+        background: var(--success-hover);
+      }
+
+      /* =========================================================
+           4. FOLHA A4
+           ========================================================= */
+
+      .sheet-container {
+        width: 100%;
+
+        display: flex;
+
+        justify-content: center;
+
+        overflow-x: auto;
+
+        padding-bottom: 30px;
+      }
+
+      .sheet {
+        width: 210mm;
+
+        min-height: 297mm;
+
+        background: white;
+
+        padding: 7mm;
+
+        display: flex;
+
+        flex-direction: column;
+
+        box-shadow: var(--shadow);
+
+        border-radius: 6px;
+
+        position: relative;
+      }
+
+      /* =========================================================
+           5. CABEÇALHO DA ORDEM DE SERVIÇO
+           ========================================================= */
+
+      header {
+        border: 2px solid var(--primary);
+
+        border-radius: 7px;
+
+        padding: 8px 12px;
+
+        margin-bottom: 5px;
+
+        background: var(--bg-header);
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        gap: 15px;
+      }
+
+      .brand-area {
+        display: flex;
+
+        flex-direction: column;
+      }
+
+      .brand-title {
+        font-size: 15pt;
+
+        font-weight: 900;
+
+        color: var(--primary);
+
+        letter-spacing: -0.5px;
+      }
+
+      .brand-title span {
+        color: var(--accent);
+      }
+
+      .brand-subtitle {
+        font-size: 7.5pt;
+
+        color: var(--muted);
+
+        text-transform: uppercase;
+
+        font-weight: 700;
+
+        letter-spacing: 0.5px;
+      }
+
+      .brand-info {
+        font-size: 7pt;
+
+        color: #475569;
+
+        margin-top: 3px;
+
+        border-top: 1px dashed var(--border);
+
+        padding-top: 3px;
+      }
+
+      .os-box {
+        border: 2px solid var(--accent);
+
+        border-radius: 5px;
+
+        padding: 6px 12px;
+
+        text-align: right;
+
+        background: #fff5f5;
+
+        min-width: 210px;
+      }
+
+      .os-title {
+        font-size: 8pt;
+
+        font-weight: 800;
+
+        color: var(--accent);
+
+        text-transform: uppercase;
+      }
+
+      .os-inputs {
+        font-size: 9pt;
+
+        font-weight: 700;
+
+        margin-top: 3px;
+
+        display: flex;
+
+        gap: 7px;
+
+        align-items: center;
+      }
+
+      /* =========================================================
+           6. TÍTULOS DAS SEÇÕES
+           ========================================================= */
+
+      .section-title {
+        background: var(--primary);
+
+        color: white;
+
+        font-size: 7.5pt;
+
+        font-weight: 700;
+
+        text-transform: uppercase;
+
+        padding: 4px 8px;
+
+        letter-spacing: 0.4px;
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        border-radius: 3px 3px 0 0;
+      }
+
+      .section-title.accent-bg {
+        background: var(--accent);
+      }
+
+      /* =========================================================
+           7. CAMPOS DE TEXTO
+           ========================================================= */
+
+      input[type="text"],
+      input[type="date"],
+      textarea {
+        border: none;
+
+        border-bottom: 1px dotted var(--border-dark);
+
+        background: transparent;
+
+        font-family: inherit;
+
+        font-size: 8pt;
+
+        color: inherit;
+
+        width: 100%;
+
+        outline: none;
+
+        padding: 2px 3px;
+
+        transition:
+          border-color 0.15s ease,
+          background 0.15s ease;
+      }
+
+      input:focus,
+      textarea:focus {
+        border-bottom: 1.5px solid var(--accent);
+
+        background: #fffafa;
+      }
+
+      /* =========================================================
+           8. CLIENTE E MOTOCICLETA
+           ========================================================= */
+
+      .client-vehicle-grid {
+        border: 1px solid var(--border);
+
+        border-radius: 4px;
+
+        margin-bottom: 5px;
+
+        overflow: hidden;
+      }
+
+      .grid-row {
+        display: flex;
+
+        border-bottom: 1px solid var(--border);
+      }
+
+      .grid-row:last-child {
+        border-bottom: none;
+      }
+
+      .field {
+        padding: 4px 6px;
+
+        font-size: 8pt;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 6px;
+
+        border-right: 1px solid var(--border);
+
+        background: #fff;
+      }
+
+      .field:last-child {
+        border-right: none;
+      }
+
+      .field label {
+        font-weight: 700;
+
+        color: #334155;
+
+        white-space: nowrap;
+      }
+
+      /* =========================================================
+           9. CHECKLIST
+           ========================================================= */
+
+      .checklist-container {
+        border: 1px solid var(--border);
+
+        border-radius: 4px;
+
+        margin-bottom: 5px;
+
+        overflow: hidden;
+      }
+
+      .categories-grid {
+        display: grid;
+
+        grid-template-columns: repeat(3, 1fr);
+
+        gap: 4px;
+
+        padding: 4px;
+
+        background: #f8fafc;
+      }
+
+      .category-column {
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 4px;
+      }
+
+      .category-box {
+        border: 1px solid var(--border);
+
+        border-radius: 3px;
+
+        background: white;
+
+        padding: 3px 6px;
+      }
+
+      .category-header {
+        font-size: 7pt;
+
+        font-weight: 800;
+
+        background: var(--bg-section);
+
+        color: var(--primary);
+
+        padding: 2px 4px;
+
+        text-transform: uppercase;
+
+        margin-bottom: 3px;
+
+        border-left: 2.5px solid var(--accent);
+
+        border-radius: 1px;
+      }
+
+      .check-item {
+        font-size: 7.3pt;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 6px;
+
+        padding: 1px 0;
+
+        color: #334155;
+
+        cursor: pointer;
+      }
+
+      .check-item input[type="checkbox"] {
+        appearance: none;
+
+        -webkit-appearance: none;
+
+        width: 10px;
+
+        height: 10px;
+
+        flex-shrink: 0;
+
+        border: 1.5px solid var(--border-dark);
+
+        border-radius: 2px;
+
+        cursor: pointer;
+
+        display: grid;
+
+        place-content: center;
+
+        background: white;
+      }
+
+      .check-item input[type="checkbox"]:checked {
+        background: var(--accent);
+
+        border-color: var(--accent);
+      }
+
+      .check-item input[type="checkbox"]:checked::before {
+        content: "✔";
+
+        font-size: 7px;
+
+        color: white;
+
+        font-weight: bold;
+      }
+
+      /* =========================================================
+           10. ORÇAMENTO
+           ========================================================= */
+
+      .services-section {
+        border: 1px solid var(--border);
+
+        border-radius: 4px;
+
+        margin-bottom: 5px;
+
+        overflow: hidden;
+      }
+
+      .budget-toolbar {
+        display: flex;
+
+        justify-content: flex-end;
+
+        padding: 5px;
+
+        background: #f8fafc;
+
+        border-bottom: 1px solid var(--border);
+      }
+
+      .add-item-btn {
+        border: none;
+
+        background: var(--primary);
+
+        color: white;
+
+        padding: 7px 12px;
+
+        border-radius: 7px;
+
+        font-size: 7.5pt;
+
+        font-weight: 700;
+
+        transition: 0.18s ease;
+      }
+
+      .add-item-btn:hover {
+        background: #334155;
+
+        transform: translateY(-1px);
+      }
+
+      table.services-table {
+        width: 100%;
+
+        border-collapse: collapse;
+
+        font-size: 8pt;
+      }
+
+      table.services-table th,
+      table.services-table td {
+        border: 1px solid var(--border);
+
+        padding: 3px 6px;
+
+        text-align: left;
+
+        background: white;
+      }
+
+      table.services-table th {
+        background: var(--bg-section);
+
+        font-size: 7pt;
+
+        font-weight: 700;
+
+        color: #334155;
+      }
+
+      .text-center {
+        text-align: center !important;
+      }
+
+      .text-right {
+        text-align: right !important;
+      }
+
+      .total-row {
+        font-weight: bold;
+
+        background: #f8fafc;
+      }
+
+      .remove-item {
+        width: 24px;
+
+        height: 24px;
+
+        border: none;
+
+        border-radius: 5px;
+
+        background: #fee2e2;
+
+        color: #b91c1c;
+
+        font-weight: 900;
+
+        cursor: pointer;
+      }
+
+      .remove-item:hover {
+        background: #fecaca;
+      }
+
+      /* =========================================================
+           11. DIAGNÓSTICO E TESTE FINAL
+           ========================================================= */
+
+      .bottom-split {
+        display: grid;
+
+        grid-template-columns: 1.1fr 0.9fr;
+
+        gap: 5px;
+
+        margin-bottom: 5px;
+      }
+
+      .box-container {
+        border: 1px solid var(--border);
+
+        border-radius: 4px;
+
+        display: flex;
+
+        flex-direction: column;
+
+        background: white;
+
+        overflow: hidden;
+      }
+
+      .diag-content {
+        padding: 4px;
+
+        height: 54px;
+      }
+
+      .diag-content textarea {
+        height: 100%;
+
+        border: none;
+
+        resize: none;
+
+        font-size: 8pt;
+      }
+
+      .test-grid {
+        display: grid;
+
+        grid-template-columns: repeat(2, 1fr);
+
+        gap: 2px 8px;
+
+        padding: 4px;
+
+        background: white;
+      }
+
+      .test-footer-row {
+        padding: 3px 6px;
+
+        border-top: 1px solid var(--border);
+
+        font-size: 7.3pt;
+
+        background: #f8fafc;
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+      }
+
+      /* =========================================================
+           12. RECOMENDAÇÕES
+           ========================================================= */
+
+      .recommendations-section {
+        border: 1px solid var(--border);
+
+        border-radius: 4px;
+
+        margin-bottom: 6px;
+
+        background: white;
+
+        overflow: hidden;
+      }
+
+      .recommendations-content {
+        padding: 4px;
+
+        height: 28px;
+      }
+
+      .recommendations-content input {
+        border: none;
+
+        height: 100%;
+      }
+
+      /* =========================================================
+           13. ASSINATURAS
+           ========================================================= */
+
+      .signatures {
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 30px;
+
+        margin-top: 30px;
+
+        padding-top: 4px;
+      }
+
+      .sig-line {
+        border-top: 1.5px solid var(--border-dark);
+
+        text-align: center;
+
+        font-size: 7.2pt;
+
+        padding-top: 3px;
+
+        color: #334155;
+
+        text-transform: uppercase;
+
+        font-weight: 600;
+      }
+
+      /* =========================================================
+           14. RESPONSIVIDADE
+           ========================================================= */
+
+      @media (min-width: 768px) {
+        .system-toolbar {
+          flex-direction: row;
+
+          justify-content: space-between;
+
+          align-items: center;
+        }
+
+        .toolbar-actions {
+          display: flex;
+
+          flex-direction: row;
+        }
+
+        .btn-print {
+          grid-column: auto;
+        }
+      }
+
+      @media (max-width: 767px) {
+        body {
+          padding: 8px;
+        }
+
+        .sheet {
+          min-width: 210mm;
+        }
+
+        .sheet-container {
+          justify-content: flex-start;
+        }
+
+        .system-header-top {
+          align-items: flex-start;
+        }
+      }
+
+      /* =========================================================
+           15. IMPRESSÃO
+           ========================================================= */
+
+      @media print {
+        @page {
+          size: A4 portrait;
+
+          margin: 5mm;
+        }
+
+        body {
+          background: white !important;
+
+          padding: 0 !important;
+
+          display: block !important;
+        }
+
+        .system-toolbar {
+          display: none !important;
+        }
+
+        .sheet-container {
+          display: block !important;
+
+          padding: 0 !important;
+
+          overflow: visible !important;
+        }
+
+        .sheet {
+          box-shadow: none !important;
+
+          width: 198mm !important;
+
+          min-height: 285mm !important;
+
+          margin: 0 auto !important;
+
+          border-radius: 0 !important;
+
+          padding: 0 !important;
+        }
+
+        .budget-toolbar {
+          display: none !important;
+        }
+
+        .remove-column {
+          display: none !important;
+        }
+
+        .remove-item {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- =========================================================
+         BARRA DE CONTROLE
+         ========================================================= -->
+
+    <div class="system-toolbar">
+      <div class="system-header-top">
+        <div>
+          <div class="system-title">🏍️ Rogério Motos Manager</div>
+
+          <div class="system-subtitle">Ordem de Serviço e Checklist</div>
+        </div>
+      </div>
+
+      <div class="toolbar-actions">
+        <!-- Limpa todos os campos -->
+        <button class="btn btn-secondary" onclick="limparFormulario()">
+          🗑️ Limpar
+        </button>
+
+        <!-- Salva a OS em JSON -->
+        <button class="btn btn-primary" onclick="salvarArquivoJSON()">
+          💾 Salvar Projeto
+        </button>
+
+        <!-- Abre projeto JSON -->
+        <button class="btn btn-secondary" onclick="carregarArquivoJSON()">
+          📂 Abrir Projeto
+        </button>
+
+        <!-- Input escondido usado pelo botão Abrir -->
+        <input
+          type="file"
+          id="fileInput"
+          style="display: none"
+          accept=".json"
+          onchange="processarArquivoJSON(event)"
+        />
+
+        <!-- Impressão -->
+        <button class="btn btn-print" onclick="window.print()">
+          🖨️ Imprimir / Salvar PDF
+        </button>
+      </div>
+    </div>
+
+    <!-- =========================================================
+         FOLHA A4
+         ========================================================= -->
+
+    <div class="sheet-container">
+      <div class="sheet">
+        <!-- =================================================
+                 CABEÇALHO
+                 ================================================= -->
+
+        <header>
+          <div class="brand-area">
+            <div class="brand-title">
+              🏍 Rogério Motos
+              <span>●</span>
+            </div>
+
+            <div class="brand-subtitle">Oficina Especializada em Motos</div>
+
+            <!--
+                        ALTERE AQUI os dados da oficina.
+                    -->
+
+            <div class="brand-info">
+            &bull; Rua. Desembargador Hélio Cabral, 256, Feitosa, Maceió/AL &bull; Tel: (82) 9 8185-0734 &bull;
+            </div>
+          </div>
+
+          <!-- Número e data da OS -->
+
+          <div class="os-box">
+            <div class="os-title">Ordem de Serviço</div>
+
+            <div class="os-inputs">
+              <span>OS Nº:</span>
+
+              <input
+                type="text"
+                id="os_numero"
+                style="width: 45px; font-weight: bold"
+                placeholder="001"
+              />
+
+              <span>Data:</span>
+
+              <input type="date" id="os_data" style="width: 90px" />
+            </div>
+          </div>
+        </header>
+
+        <!-- =================================================
+                 1. CLIENTE E MOTOCICLETA
+                 ================================================= -->
+
+        <div class="client-vehicle-grid">
+          <div class="section-title">
+            1. Identificação do Cliente e da Motocicleta
+          </div>
+
+          <div class="grid-row">
+            <div class="field" style="flex: 3">
+              <label> Cliente: </label>
+
+              <input
+                type="text"
+                id="cliente_nome"
+                placeholder="Nome completo do cliente"
+              />
+            </div>
+
+            <div class="field" style="flex: 1.3">
+              <label> Telefone: </label>
+
+              <input
+                type="text"
+                id="cliente_tel"
+                placeholder="(00) 00000-0000"
+              />
+            </div>
+          </div>
+
+          <div class="grid-row">
+            <div class="field" style="flex: 1.1">
+              <label> Placa: </label>
+
+              <input
+                type="text"
+                id="moto_placa"
+                placeholder="ABC-0123"
+                style="text-transform: uppercase"
+              />
+            </div>
+
+            <div class="field" style="flex: 1.9">
+              <label> Marca/Modelo: </label>
+
+              <input
+                type="text"
+                id="moto_modelo"
+                placeholder="Ex: Honda CB 300R"
+              />
+            </div>
+
+            <div class="field" style="flex: 0.8">
+              <label> Ano: </label>
+
+              <input type="text" id="moto_ano" placeholder="2023" />
+            </div>
+
+            <div class="field" style="flex: 1.1">
+              <label> KM Entr: </label>
+
+              <input type="text" id="moto_km" placeholder="00000" />
+            </div>
+
+            <div class="field" style="flex: 1.5">
+              <label> Data/Hora: </label>
+
+              <input
+                type="text"
+                id="moto_data_hora"
+                placeholder="DD/MM HH:MM"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- =================================================
+                 2. CHECKLIST
+                 ================================================= -->
+
+        <div class="checklist-container">
+          <div class="section-title">
+            <span> 2. Checklist de Inspeção Geral </span>
+
+            <span style="font-size: 6.5pt; font-weight: normal; opacity: 0.9">
+              Marque os itens verificados
+            </span>
+          </div>
+
+          <div class="categories-grid" id="checklist_principal">
+            <!-- ================================
+                         COLUNA 1
+                         ================================ -->
+
+            <div class="category-column">
+              <div class="category-box">
+                <div class="category-header">Estado Externo</div>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Carenagem/plásticos
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Tanque/pintura
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Banco
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Retrovisores
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Manetes/manoplas
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Pedaleiras
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Farol/lentes
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Lanterna/setas
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Escapamento
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Rodas/aros
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Pneus
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Riscos/danos
+                </label>
+              </div>
+
+              <div class="category-box">
+                <div class="category-header">Transmissão</div>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Embreagem
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Cabo/acionamento
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Câmbio
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Corrente
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Coroa / Pinhão
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Tensionamento
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Lubrificação
+                </label>
+              </div>
+            </div>
+
+            <!-- ================================
+                         COLUNA 2
+                         ================================ -->
+
+            <div class="category-column">
+              <div class="category-box">
+                <div class="category-header">Motor / Alimentação</div>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Óleo/nível
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Vazamentos
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Ruídos anormais
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Partida
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Marcha lenta
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Aceleração
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Temperatura
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Filtro de ar
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Vela(s)
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Bico injetor
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Corpo borboleta
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Scanner/falhas
+                </label>
+              </div>
+
+              <div class="category-box">
+                <div class="category-header">Freios</div>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Pastilhas/lonas
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Disco dianteiro
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Disco traseiro
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Fluido / Mangueiras
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Freio dianteiro/traseiro
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Sistema ABS/CBS
+                </label>
+              </div>
+            </div>
+
+            <!-- ================================
+                         COLUNA 3
+                         ================================ -->
+
+            <div class="category-column">
+              <div class="category-box">
+                <div class="category-header">Suspensão / Direção</div>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Bengalas
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Retentores
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Amortecedor
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Caixa de direção
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Folgas / Rolamentos
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Empenamento
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Alinhamento
+                </label>
+              </div>
+
+              <div class="category-box">
+                <div class="category-header">Elétrica</div>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Bateria / Carga
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Partida elétrica
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Farol alto/baixo
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Lanterna / Freio
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Setas / Buzina
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Painel / Fusíveis
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Chicote/conectores
+                </label>
+
+                <label class="check-item">
+                  <input type="checkbox" />
+                  Sensores
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- =================================================
+                 3. ORÇAMENTO
+                 ================================================= -->
+
+        <div class="services-section">
+          <div class="section-title">3. Orçamento — Serviços e Peças</div>
+
+          <!--
+                    O orçamento começa com apenas UMA linha.
+                    O botão abaixo permite adicionar quantas
+                    linhas forem necessárias.
+                -->
+
+          <div class="budget-toolbar">
+            <button
+              type="button"
+              class="add-item-btn"
+              onclick="adicionarItem()"
+            >
+              + Adicionar item
+            </button>
+          </div>
+
+          <table class="services-table" id="tabela_servicos">
+            <thead>
+              <tr>
+                <th style="width: 62%">Descrição dos Serviços e Peças</th>
+
+                <th style="width: 8%" class="text-center">Qtd</th>
+
+                <th style="width: 20%" class="text-right">Valor Total (R$)</th>
+
+                <th style="width: 7%" class="text-center">Aut.</th>
+
+                <th style="width: 3%" class="remove-column">
+                  <!-- remover -->
+                </th>
+              </tr>
+            </thead>
+
+            <tbody id="servicos_body">
+              <!--
+                            PRIMEIRO ITEM.
+                            É o único item que aparece inicialmente.
+                        -->
+
+              <tr>
+                <td>
+                  <input
+                    type="text"
+                    placeholder="Descrição do serviço ou peça"
+                  />
+                </td>
+
+                <td>
+                  <input type="text" class="text-center" value="1" />
+                </td>
+
+                <td>
+                  <input
+                    type="text"
+                    class="text-right val-field"
+                    placeholder="0,00"
+                    inputmode="decimal"
+                    oninput="calcularTotal()"
+                  />
+                </td>
+
+                <td class="text-center">
+                  <input type="checkbox" />
+                </td>
+
+                <td class="text-center remove-column">
+                  <button
+                    type="button"
+                    class="remove-item"
+                    onclick="removerItem(this)"
+                    title="Remover item"
+                  >
+                    ×
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+
+            <tfoot>
+              <tr class="total-row">
+                <td colspan="2" class="text-right">TOTAL GERAL:</td>
+
+                <td
+                  colspan="3"
+                  id="total_geral"
+                  style="font-size: 9pt; padding-left: 6px"
+                >
+                  R$ 0,00
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- =================================================
+                 4. DIAGNÓSTICO + 5. TESTE FINAL
+                 ================================================= -->
+
+        <div class="bottom-split">
+          <!-- DIAGNÓSTICO -->
+
+          <div class="box-container">
+            <div class="section-title">4. Diagnóstico / Observações</div>
+
+            <div class="diag-content">
+              <textarea
+                id="obs_diagnostico"
+                placeholder="Descreva falhas relatadas, estado das peças ou observações técnicas..."
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- TESTE FINAL -->
+
+          <div class="box-container">
+            <div class="section-title accent-bg">
+              5. Teste Final (Pós-Serviço)
+            </div>
+
+            <div class="test-grid" id="teste_final">
+              <label class="check-item">
+                <input type="checkbox" />
+                Motor normal
+              </label>
+
+              <label class="check-item">
+                <input type="checkbox" />
+                Sem vazamentos
+              </label>
+
+              <label class="check-item">
+                <input type="checkbox" />
+                Freios
+              </label>
+
+              <label class="check-item">
+                <input type="checkbox" />
+                Embreagem
+              </label>
+
+              <label class="check-item">
+                <input type="checkbox" />
+                Câmbio
+              </label>
+
+              <label class="check-item">
+                <input type="checkbox" />
+                Suspensão
+              </label>
+
+              <label class="check-item">
+                <input type="checkbox" />
+                Elétrica
+              </label>
+
+              <label class="check-item">
+                <input type="checkbox" />
+                Pneus
+              </label>
+
+              <label class="check-item">
+                <input type="checkbox" />
+                Corrente
+              </label>
+
+              <label class="check-item">
+                <input type="checkbox" />
+                Teste rodagem
+              </label>
+            </div>
+
+            <div class="test-footer-row">
+              <span>
+                <strong>KM SAÍDA:</strong>
+
+                <input type="text" id="km_saida" style="width: 55px" />
+              </span>
+
+              <span>
+                Data:
+
+                <input type="date" id="data_saida" style="width: 90px" />
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- =================================================
+                 6. RECOMENDAÇÕES
+                 ================================================= -->
+
+        <div class="recommendations-section">
+          <div class="section-title">6. Recomendações e Alertas ao Cliente</div>
+
+          <div class="recommendations-content">
+            <input
+              type="text"
+              id="recomendacoes_cliente"
+              placeholder="Orientações sobre trocas futuras, prazos de garantia ou cuidados gerais..."
+            />
+          </div>
+        </div>
+
+        <!-- =================================================
+                 ASSINATURAS
+                 ================================================= -->
+
+        <div class="signatures">
+          <div class="sig-line">Assinatura do Cliente</div>
+
+          <div class="sig-line">Responsável pela Oficina</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================================
+         JAVASCRIPT
+         Toda a lógica do sistema fica aqui.
+         ========================================================= -->
+
+    <script>
+      /* =========================================================
+           1. CÁLCULO DO TOTAL
+           ========================================================= */
+
+      function calcularTotal() {
+        const campos = document.querySelectorAll(".val-field");
+
+        let total = 0;
+
+        campos.forEach((campo) => {
+          /*
+                    Aceita formatos como:
+
+                    100
+                    100,50
+                    1.250,50
+                */
+
+          let valor = campo.value.replace(/\./g, "").replace(",", ".");
+
+          const numero = parseFloat(valor);
+
+          if (!isNaN(numero)) {
+            total += numero;
+          }
+        });
+
+        document.getElementById("total_geral").innerText =
+          "R$ " +
+          total.toLocaleString("pt-BR", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          });
+      }
+
+      /* =========================================================
+           2. ADICIONAR ITEM AO ORÇAMENTO
+           ========================================================= */
+
+      function adicionarItem() {
+        const tbody = document.getElementById("servicos_body");
+
+        const linha = document.createElement("tr");
+
+        linha.innerHTML = `
+
+                <td>
+
+                    <input
+                        type="text"
+                        placeholder="Descrição do serviço ou peça">
+
+                </td>
+
+
+                <td>
+
+                    <input
+                        type="text"
+                        class="text-center"
+                        value="1">
+
+                </td>
+
+
+                <td>
+
+                    <input
+                        type="text"
+                        class="text-right val-field"
+                        placeholder="0,00"
+                        inputmode="decimal"
+                        oninput="calcularTotal()">
+
+                </td>
+
+
+                <td class="text-center">
+
+                    <input type="checkbox">
+
+                </td>
+
+
+                <td class="text-center remove-column">
+
+                    <button
+                        type="button"
+                        class="remove-item"
+                        onclick="removerItem(this)"
+                        title="Remover item">
+
+                        ×
+
+                    </button>
+
+                </td>
+            `;
+
+        tbody.appendChild(linha);
+
+        /*
+                Coloca o cursor automaticamente
+                no campo de descrição.
+            */
+
+        const campo = linha.querySelector('input[type="text"]');
+
+        if (campo) {
+          campo.focus();
+        }
+
+        calcularTotal();
+      }
+
+      /* =========================================================
+           3. REMOVER ITEM
+           ========================================================= */
+
+      function removerItem(botao) {
+        const tbody = document.getElementById("servicos_body");
+
+        /*
+                Não permite ficar sem nenhuma
+                linha de orçamento.
+
+                Se houver apenas uma linha,
+                ela é limpa em vez de removida.
+            */
+
+        if (tbody.children.length <= 1) {
+          const linha = botao.closest("tr");
+
+          const inputs = linha.querySelectorAll("input");
+
+          inputs.forEach((input) => {
+            if (input.type === "checkbox") {
+              input.checked = false;
+            } else {
+              input.value = input === inputs[1] ? "1" : "";
+            }
+          });
+
+          calcularTotal();
+
+          return;
+        }
+
+        botao.closest("tr").remove();
+
+        calcularTotal();
+      }
+
+      /* =========================================================
+           4. LIMPAR FORMULÁRIO
+           ========================================================= */
+
+      function limparFormulario() {
+        const confirmar = confirm(
+          "Deseja realmente limpar todos os campos desta Ordem de Serviço?",
+        );
+
+        if (!confirmar) {
+          return;
+        }
+
+        /*
+                Limpa textos, datas e textareas.
+            */
+
+        document
+          .querySelectorAll('input[type="text"], input[type="date"], textarea')
+          .forEach((campo) => {
+            campo.value = "";
+          });
+
+        /*
+                Desmarca todos os checkboxes.
+            */
+
+        document.querySelectorAll('input[type="checkbox"]').forEach((campo) => {
+          campo.checked = false;
+        });
+
+        /*
+                Remove todos os itens extras
+                do orçamento.
+            */
+
+        const tbody = document.getElementById("servicos_body");
+
+        while (tbody.children.length > 1) {
+          tbody.lastElementChild.remove();
+        }
+
+        /*
+                Limpa a primeira linha.
+            */
+
+        const primeiraLinha = tbody.querySelector("tr");
+
+        if (primeiraLinha) {
+          const inputs = primeiraLinha.querySelectorAll("input");
+
+          inputs.forEach((input) => {
+            if (input.type === "checkbox") {
+              input.checked = false;
+            } else if (input.classList.contains("text-center")) {
+              input.value = "1";
+            } else {
+              input.value = "";
+            }
+          });
+        }
+
+        calcularTotal();
+      }
+
+      /* =========================================================
+           5. NOME SEGURO PARA O ARQUIVO
+           ========================================================= */
+
+      function nomeSeguroArquivo(nome) {
+        return (
+          (nome || "Cliente")
+
+            /*
+                    Remove acentos.
+                */
+
+            .normalize("NFD")
+
+            .replace(/[\u0300-\u036f]/g, "")
+
+            /*
+                    Remove caracteres especiais.
+                */
+
+            .replace(/[^a-zA-Z0-9\s-]/g, "")
+
+            .trim()
+
+            /*
+                    Espaços viram "_".
+                */
+
+            .replace(/\s+/g, "_")
+
+            /*
+                    Evita vários "_" juntos.
+                */
+
+            .replace(/_+/g, "_")
+        );
+      }
+
+      /* =========================================================
+           6. SALVAR PROJETO
+           ========================================================= */
+
+      function salvarArquivoJSON() {
+        const nomeCliente = document
+          .getElementById("cliente_nome")
+          .value.trim();
+
+        const osNumero = document.getElementById("os_numero").value.trim();
+
+        /*
+                =====================================================
+                NOME DO ARQUIVO
+                =====================================================
+
+                Exemplos:
+
+                OS_001_Joao_Silva.json
+
+                OS_Joao_Silva.json
+
+                OS_001.json
+            */
+
+        const nomeLimpo = nomeSeguroArquivo(nomeCliente);
+
+        let nomeArquivo = "OS_MOTOFIX";
+
+        if (osNumero && nomeLimpo) {
+          nomeArquivo = `OS_${osNumero}_${nomeLimpo}`;
+        } else if (nomeLimpo) {
+          nomeArquivo = `OS_${nomeLimpo}`;
+        } else if (osNumero) {
+          nomeArquivo = `OS_${osNumero}`;
+        }
+
+        /* =====================================================
+               COLETA DOS DADOS PRINCIPAIS
+               ===================================================== */
+
+        const dados = {
+          os_numero: document.getElementById("os_numero").value,
+
+          os_data: document.getElementById("os_data").value,
+
+          cliente_nome: document.getElementById("cliente_nome").value,
+
+          cliente_tel: document.getElementById("cliente_tel").value,
+
+          moto_placa: document.getElementById("moto_placa").value,
+
+          moto_modelo: document.getElementById("moto_modelo").value,
+
+          moto_ano: document.getElementById("moto_ano").value,
+
+          moto_km: document.getElementById("moto_km").value,
+
+          moto_data_hora: document.getElementById("moto_data_hora").value,
+
+          obs_diagnostico: document.getElementById("obs_diagnostico").value,
+
+          km_saida: document.getElementById("km_saida").value,
+
+          data_saida: document.getElementById("data_saida").value,
+
+          recomendacoes_cliente: document.getElementById(
+            "recomendacoes_cliente",
+          ).value,
+
+          /* =================================================
+                   CHECKLIST
+                   ================================================= */
+
+          checklists: Array.from(
+            document.querySelectorAll('input[type="checkbox"]'),
+          ).map((checkbox) => checkbox.checked),
+
+          /* =================================================
+                   SERVIÇOS / PEÇAS
+                   ================================================= */
+
+          servicos: Array.from(
+            document.querySelectorAll("#servicos_body tr"),
+          ).map((linha) => {
+            const campos = linha.querySelectorAll("input");
+
+            return {
+              desc: campos[0]?.value || "",
+
+              qtd: campos[1]?.value || "",
+
+              valor: campos[2]?.value || "",
+
+              aut: campos[3]?.checked || false,
+            };
+          }),
+
+          /*
+                    Data de salvamento.
+                */
+
+          salvo_em: new Date().toISOString(),
+        };
+
+        /* =====================================================
+               CRIA O ARQUIVO JSON
+               ===================================================== */
+
+        const blob = new Blob(
+          [JSON.stringify(dados, null, 2)],
+
+          {
+            type: "application/json;charset=utf-8",
+          },
+        );
+
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+
+        link.href = url;
+
+        link.download = `${nomeArquivo}.json`;
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        link.remove();
+
+        URL.revokeObjectURL(url);
+
+        /*
+                Pequeno feedback para o usuário.
+            */
+
+        alert(`Projeto salvo como:\n${nomeArquivo}.json`);
+      }
+
+      /* =========================================================
+           7. ABRIR PROJETO
+           ========================================================= */
+
+      function carregarArquivoJSON() {
+        document.getElementById("fileInput").click();
+      }
+
+      /* =========================================================
+           8. PROCESSAR ARQUIVO JSON
+           ========================================================= */
+
+      function processarArquivoJSON(event) {
+        const arquivo = event.target.files[0];
+
+        if (!arquivo) {
+          return;
+        }
+
+        const leitor = new FileReader();
+
+        leitor.onload = function (evento) {
+          try {
+            const dados = JSON.parse(evento.target.result);
+
+            /* =========================================
+                           DADOS PRINCIPAIS
+                           ========================================= */
+
+            definirValor("os_numero", dados.os_numero);
+
+            definirValor("os_data", dados.os_data);
+
+            definirValor("cliente_nome", dados.cliente_nome);
+
+            definirValor("cliente_tel", dados.cliente_tel);
+
+            definirValor("moto_placa", dados.moto_placa);
+
+            definirValor("moto_modelo", dados.moto_modelo);
+
+            definirValor("moto_ano", dados.moto_ano);
+
+            definirValor("moto_km", dados.moto_km);
+
+            definirValor("moto_data_hora", dados.moto_data_hora);
+
+            definirValor("obs_diagnostico", dados.obs_diagnostico);
+
+            definirValor("km_saida", dados.km_saida);
+
+            definirValor("data_saida", dados.data_saida);
+
+            definirValor("recomendacoes_cliente", dados.recomendacoes_cliente);
+
+            /* =========================================
+                           CHECKLIST
+                           ========================================= */
+
+            if (Array.isArray(dados.checklists)) {
+              const checkboxes = document.querySelectorAll(
+                'input[type="checkbox"]',
+              );
+
+              dados.checklists.forEach((marcado, indice) => {
+                if (checkboxes[indice]) {
+                  checkboxes[indice].checked = marcado;
+                }
+              });
+            }
+
+            /* =========================================
+                           SERVIÇOS
+                           ========================================= */
+
+            if (Array.isArray(dados.servicos)) {
+              reconstruirOrcamento(dados.servicos);
+            }
+
+            calcularTotal();
+
+            alert("Projeto carregado com sucesso!");
+          } catch (erro) {
+            console.error(erro);
+
+            alert(
+              "Erro ao ler o arquivo.\n\n" +
+                "Certifique-se de que ele é um " +
+                "arquivo JSON válido da MOTOFIX.",
+            );
+          }
+        };
+
+        leitor.readAsText(arquivo);
+
+        /*
+                Permite abrir novamente o mesmo arquivo.
+            */
+
+        event.target.value = "";
+      }
+
+      /* =========================================================
+           9. FUNÇÃO AUXILIAR PARA PREENCHER CAMPOS
+           ========================================================= */
+
+      function definirValor(id, valor) {
+        const elemento = document.getElementById(id);
+
+        if (elemento) {
+          elemento.value = valor || "";
+        }
+      }
+
+      /* =========================================================
+           10. RECONSTRUIR ORÇAMENTO
+           ========================================================= */
+
+      function reconstruirOrcamento(servicos) {
+        const tbody = document.getElementById("servicos_body");
+
+        /*
+                Remove todas as linhas atuais.
+            */
+
+        tbody.innerHTML = "";
+
+        /*
+                Se não houver serviço,
+                cria uma linha vazia.
+            */
+
+        if (!servicos.length) {
+          adicionarItem();
+
+          return;
+        }
+
+        servicos.forEach((servico) => {
+          const linha = document.createElement("tr");
+
+          linha.innerHTML = `
+
+                        <td>
+
+                            <input
+                                type="text"
+                                placeholder="Descrição do serviço ou peça"
+                                value="${escaparHTML(servico.desc)}">
+
+                        </td>
+
+
+                        <td>
+
+                            <input
+                                type="text"
+                                class="text-center"
+                                value="${escaparHTML(servico.qtd || "1")}">
+
+                        </td>
+
+
+                        <td>
+
+                            <input
+                                type="text"
+                                class="text-right val-field"
+                                placeholder="0,00"
+                                inputmode="decimal"
+                                value="${escaparHTML(servico.valor)}"
+                                oninput="calcularTotal()">
+
+                        </td>
+
+
+                        <td class="text-center">
+
+                            <input
+                                type="checkbox"
+                                ${servico.aut ? "checked" : ""}>
+
+                        </td>
+
+
+                        <td class="text-center remove-column">
+
+                            <button
+                                type="button"
+                                class="remove-item"
+                                onclick="removerItem(this)"
+                                title="Remover item">
+
+                                ×
+
+                            </button>
+
+                        </td>
+
+                    `;
+
+          tbody.appendChild(linha);
+        });
+      }
+
+      /* =========================================================
+           11. PROTEÇÃO CONTRA HTML INJETADO
+           ========================================================= */
+
+      function escaparHTML(valor) {
+        return String(valor ?? "")
+          .replace(/&/g, "&amp;")
+
+          .replace(/</g, "&lt;")
+
+          .replace(/>/g, "&gt;")
+
+          .replace(/"/g, "&quot;")
+
+          .replace(/'/g, "&#039;");
+      }
+
+      /* =========================================================
+           12. ATUALIZA TÍTULO DO NAVEGADOR
+           ========================================================= */
+
+      function atualizarTitulo() {
+        const cliente = document.getElementById("cliente_nome");
+
+        if (cliente && cliente.value.trim()) {
+          document.title = "OS - " + cliente.value.trim();
+        } else {
+          document.title = "MOTOFIX - Ordem de Serviço";
+        }
+      }
+
+      /* =========================================================
+           13. INICIALIZAÇÃO
+           ========================================================= */
+
+      document.addEventListener("DOMContentLoaded", function () {
+        /*
+                    Atualiza o título conforme o cliente
+                    é digitado.
+                */
+
+        const cliente = document.getElementById("cliente_nome");
+
+        if (cliente) {
+          cliente.addEventListener("input", atualizarTitulo);
+        }
+
+        /*
+                    Calcula o total inicial.
+                */
+
+        calcularTotal();
+      });
+    </script>
+  </body>
+</html>
